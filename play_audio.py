@@ -1,6 +1,6 @@
 ##------------------------------------------
 ##--- Author: Pradeep Singh
-##--- Blog: https://iotbytes.wordpress.com/
+##--- Blog: https://iotbytes.wordpress.com/play-audio-file-on-phone-line-with-raspberry-pi/
 ##--- Date: 24th June 2018
 ##--- Version: 1.0
 ##--- Python Ver: 2.7
