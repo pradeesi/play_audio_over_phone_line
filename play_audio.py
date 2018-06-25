@@ -32,7 +32,7 @@ analogue_modem.writeTimeout = 3     #timeout for write
 
 # Used in global event listener
 disable_modem_event_listener = True
-RINGS_BEFORE_AUTO_ANSWER = 3
+RINGS_BEFORE_AUTO_ANSWER = 2
 
 
 #=================================================================
@@ -188,9 +188,8 @@ def play_audio():
 	global disable_modem_event_listener
 	disable_modem_event_listener = True
 
-	wf = wave.open('output.wav','rb')
+	wf = wave.open('sample.wav','rb')
 	chunk = 1024
-
 
 	data = wf.readframes(chunk)
 	while data != '':
@@ -199,8 +198,8 @@ def play_audio():
 		time.sleep(.1)
 	wf.close()
 
-	analogue_modem.flushInput()
-	analogue_modem.flushOutput()
+	#analogue_modem.flushInput()
+	#analogue_modem.flushOutput()
 
 	cmd = "<DLE><ETX>" + "\r"
 	analogue_modem.write(cmd.encode())
@@ -267,12 +266,6 @@ def read_data():
 
 
 				if ("RING" in modem_data) or ("DATE" in modem_data) or ("TIME" in modem_data) or ("NMBR" in modem_data):
-					if ("NMBR" in modem_data):
-						print modem_data[5:]
-					if ("DATE" in modem_data):
-						print modem_data[5:]
-					if ("TIME" in modem_data):
-						print modem_data[5:]
 					if "RING" in modem_data.strip(chr(16)):
 						ring_data = ring_data + modem_data
 						ring_count = ring_data.count("RING")
@@ -280,7 +273,6 @@ def read_data():
 							pass
 							print modem_data
 						elif ring_count == RINGS_BEFORE_AUTO_ANSWER:
-							print "call auto answer here"
 							ring_data = ""
 							play_audio()							
 #=================================================================
