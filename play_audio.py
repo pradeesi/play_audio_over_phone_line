@@ -195,7 +195,7 @@ def play_audio():
 	while data != '':
 		analogue_modem.write(data)
 		data = wf.readframes(chunk)
-		time.sleep(.1)
+		time.sleep(.12)
 	wf.close()
 
 	#analogue_modem.flushInput()
