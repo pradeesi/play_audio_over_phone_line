@@ -195,6 +195,7 @@ def play_audio():
 	while data != '':
 		analogue_modem.write(data)
 		data = wf.readframes(chunk)
+		# You may need to change this sleep interval to smooth-out the audio
 		time.sleep(.12)
 	wf.close()
 
