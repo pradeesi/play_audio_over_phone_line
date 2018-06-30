@@ -17,17 +17,17 @@ import re
 import wave
 
 
-analogue_modem = serial.Serial()
-analogue_modem.port = "/dev/ttyACM0"
-analogue_modem.baudrate = 57600 #9600
-analogue_modem.bytesize = serial.EIGHTBITS #number of bits per bytes
-analogue_modem.parity = serial.PARITY_NONE #set parity check: no parity
-analogue_modem.stopbits = serial.STOPBITS_ONE #number of stop bits
-analogue_modem.timeout = 3            #non-block read
-analogue_modem.xonxoff = False     #disable software flow control
-analogue_modem.rtscts = False     #disable hardware (RTS/CTS) flow control
-analogue_modem.dsrdtr = False      #disable hardware (DSR/DTR) flow control
-analogue_modem.writeTimeout = 3     #timeout for write
+analog_modem = serial.Serial()
+analog_modem.port = "/dev/ttyACM0"
+analog_modem.baudrate = 57600 #9600
+analog_modem.bytesize = serial.EIGHTBITS #number of bits per bytes
+analog_modem.parity = serial.PARITY_NONE #set parity check: no parity
+analog_modem.stopbits = serial.STOPBITS_ONE #number of stop bits
+analog_modem.timeout = 3            #non-block read
+analog_modem.xonxoff = False     #disable software flow control
+analog_modem.rtscts = False     #disable hardware (RTS/CTS) flow control
+analog_modem.dsrdtr = False      #disable hardware (DSR/DTR) flow control
+analog_modem.writeTimeout = 3     #timeout for write
 
 
 # Used in global event listener
@@ -41,7 +41,7 @@ RINGS_BEFORE_AUTO_ANSWER = 2
 def init_modem_settings():
 	# Opean Serial Port
 	try:
-		analogue_modem.open()
+		analog_modem.open()
 	except:
 		print "Error: Unable to open the Serial Port."
 		sys.exit()
@@ -49,8 +49,8 @@ def init_modem_settings():
 
 	# Initialize
 	try:
-		analogue_modem.flushInput()
-		analogue_modem.flushOutput()
+		analog_modem.flushInput()
+		analog_modem.flushOutput()
 
 		# Test Modem connection, using basic AT command.
 		if not exec_AT_cmd("AT"):
@@ -77,8 +77,8 @@ def init_modem_settings():
 		#	print "Error: Failed to enable formatted caller report."
 
 
-		analogue_modem.flushInput()
-		analogue_modem.flushOutput()
+		analog_modem.flushInput()
+		analog_modem.flushOutput()
 
 	except:
 		print "Error: unable to Initialize the Modem"
@@ -96,10 +96,10 @@ def exec_AT_cmd(modem_AT_cmd):
 		disable_modem_event_listener = True
 
 		cmd = modem_AT_cmd + "\r"
-		analogue_modem.write(cmd.encode())
+		analog_modem.write(cmd.encode())
 
-		modem_response = analogue_modem.readline()
-		modem_response = modem_response + analogue_modem.readline()
+		modem_response = analog_modem.readline()
+		modem_response = modem_response + analog_modem.readline()
 
 		print modem_response
 
@@ -132,11 +132,11 @@ def recover_from_error():
 	except:
 		pass
 
-	analogue_modem.close()
+	analog_modem.close()
 	init_modem_settings()
 
 	try:
-		analogue_modem.close()
+		analog_modem.close()
 	except:
 		pass
 
@@ -193,22 +193,22 @@ def play_audio():
 
 	data = wf.readframes(chunk)
 	while data != '':
-		analogue_modem.write(data)
+		analog_modem.write(data)
 		data = wf.readframes(chunk)
 		# You may need to change this sleep interval to smooth-out the audio
 		time.sleep(.12)
 	wf.close()
 
-	#analogue_modem.flushInput()
-	#analogue_modem.flushOutput()
+	#analog_modem.flushInput()
+	#analog_modem.flushOutput()
 
 	cmd = "<DLE><ETX>" + "\r"
-	analogue_modem.write(cmd.encode())
+	analog_modem.write(cmd.encode())
 
 	# 2 Min Time Out
 	timeout = time.time() + 60*2 
 	while 1:
-		modem_data = analogue_modem.readline()
+		modem_data = analog_modem.readline()
 		if "OK" in modem_data:
 			break
 		if time.time() > timeout:
@@ -217,7 +217,7 @@ def play_audio():
 	disable_modem_event_listener = False
 
 	cmd = "ATH" + "\r"
-	analogue_modem.write(cmd.encode())
+	analog_modem.write(cmd.encode())
 
 	print "Play Audio Msg - END"
 	return
@@ -234,7 +234,7 @@ def read_data():
 
 	while 1:
 		if not disable_modem_event_listener:
-			modem_data = analogue_modem.readline()
+			modem_data = analog_modem.readline()
 			if modem_data != "":
 				print modem_data
 
@@ -290,8 +290,8 @@ def close_modem_port():
 		pass
 
 	try:
-		if analogue_modem.isOpen():
-			analogue_modem.close()
+		if analog_modem.isOpen():
+			analog_modem.close()
 			print ("Serial Port closed...")
 	except:
 		print "Error: Unable to close the Serial Port."
